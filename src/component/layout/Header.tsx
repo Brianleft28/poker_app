@@ -17,12 +17,30 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const menuItems = [
-    "Play",
-    "Profile",
-    "Login",
-    "Sign up",
-    "Settings",
-    "Log Out",
+    {
+      title: "Play",
+      href: "/game",
+    },
+    {
+      title: "Profile",
+      href: "/profile",
+    },
+    {
+      title: "Login",
+      href: "/login",
+    },
+    {
+      title: "Sign up",
+      href: "/signup",
+    },
+    {
+      title: "Settings",
+      href: "/settings",
+    },
+    {
+      title: "Log Out",
+      href: "/logout",
+    },
   ];
 
   return (
@@ -43,7 +61,7 @@ export default function Header() {
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
-          <LinkRouter to={"/menu"}>
+          <LinkRouter to={"/game"}>
             <Link color="foreground" as={"div"}>
               Play
             </Link>
@@ -70,20 +88,22 @@ export default function Header() {
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              color={
-                index === 2
-                  ? "primary"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
-              className="w-full"
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
+            <LinkRouter to={item.href}>
+              <Link
+                color={
+                  index === 2
+                    ? "primary"
+                    : index === menuItems.length - 1
+                    ? "danger"
+                    : "foreground"
+                }
+                className="w-full"
+                as={"div"}
+                size="lg"
+              >
+                {item.title}
+              </Link>
+            </LinkRouter>
           </NavbarMenuItem>
         ))}
       </NavbarMenu>
