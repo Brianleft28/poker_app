@@ -1,32 +1,42 @@
-import { useEffect, useState } from "react";
-import { getDeck } from "../../services/deck.services";
-import { Deck } from "../../types/deck.types";
+import React, { useEffect } from "react";
+import { Deck, Hand } from "../../types/deck.types";
+import { getHand } from "../../services/deck.services";
 
-const Board = () => {
-  const [deck, setDeck] = useState<Deck>();
-  const [isDeckLoading, setIsDeckLoading] = useState<boolean>(false);
-
+interface BoardProps {
+  deck: Deck | null;
+}
+const Board: React.FC<BoardProps> = ({ deck }) => {
+  const [hand, setHand] = React.useState<Hand>();
   useEffect(() => {
-    const fetchDeck = async () => {
-      try {
-        console.log("deck is loading...");
-        setIsDeckLoading(true);
-        const deck = await getDeck();
-        setDeck(deck);
-        console.log("deck", deck);
-        console.log("deck fetched!");
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsDeckLoading(false);
+    const fetchHand = async () => {
+      if (deck) {
+        const hand = await getHand(deck.deck_id, 2);
+        setHand(hand);
       }
     };
-    fetchDeck();
-  }, []);
-
+    fetchHand();
+  }, [deck]);
+  console.log(hand);
   return (
     <div className="md:w-[950px] w-[300px] mx-auto md:min-h-[500px] h-[450px] flex flex-col space-y-5 bg-gradient-to-l from-default-50 to-foreground-50 rounded-2xl md:p-3 p-2">
-      <div className="flex-grow bg-success-100 h-full rounded-lg p-3 border-success-50 md:border-3 border-2"></div>
+      <div className="flex-grow bg-success-100 h-full rounded-lg p-3 border-success-50 md:border-3 border-2">
+        {/* Cartas | mano - player */}
+        <div className="flex items-center  justify-center md:justify-end h-full md:items-end">
+          <div className="flex flex-col md:mr-3 justify-end h-full items-center">
+            <div className="flex space-x-3">
+              {hand?.cards.map((card) => (
+                <div key={card.code}>
+                  <img
+                    src={card.image}
+                    alt={card.code}
+                    className="hover:cursor-pointer hover:scale-105 max-w-[100px] md:max-w-[115px] object-contain"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
